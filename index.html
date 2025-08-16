@@ -6,15 +6,13 @@
 <style>
   body {
     font-family: 'Poppins', sans-serif;
-    text-align: center;
-    min-height: 100vh;
     margin: 0;
+    min-height: 100vh;
     background: linear-gradient(135deg, #000000, #ff4fac, #4facfe, #000428);
     background-size: 400% 400%;
     animation: gradientFlow 15s ease infinite;
-    color: #fff;
     overflow-x: hidden;
-    position: relative;
+    color: white;
   }
 
   @keyframes gradientFlow {
@@ -23,31 +21,56 @@
     100% { background-position: 0% 50%; }
   }
 
+  /* Intro Screen */
+  #intro {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #000000, #ff4fac, #4facfe, #000428);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+    z-index: 999;
+    text-align: center;
+  }
+  #intro h1 {
+    font-size: 2.5em;
+    text-shadow: 0 0 8px #ff4fac, 0 0 16px #4facfe;
+    margin-bottom: 20px;
+  }
+  #intro button {
+    padding: 12px 30px;
+    border: none;
+    border-radius: 30px;
+    background: linear-gradient(45deg, #ff4fac, #4facfe);
+    color: white;
+    font-weight: bold;
+    font-size: 1.3em;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255,105,180,0.8);
+    transition: 0.3s;
+  }
+  #intro button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 25px #ff4fac, 0 0 40px #4facfe;
+  }
+
+  /* Main Content */
+  #main {
+    display: none;
+    text-align: center;
+    padding-bottom: 50px;
+  }
   h1 {
     margin-top: 30px;
     font-size: 3em;
     text-shadow: 0 0 8px #ff4fac, 0 0 16px #4facfe;
   }
 
-  button {
-    margin: 15px;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 30px;
-    background: linear-gradient(45deg, #ff4fac, #4facfe);
-    color: white;
-    font-weight: bold;
-    font-size: 1.1em;
-    cursor: pointer;
-    box-shadow: 0 0 12px rgba(255, 105, 180, 0.8);
-    transition: 0.3s;
-  }
-  button:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 20px #ff4fac, 0 0 40px #4facfe;
-  }
-
-  /* สไลด์โชว์ */
+  /* Slideshow */
   .slideshow {
     margin-top: 20px;
     position: relative;
@@ -68,13 +91,10 @@
     display: block;
     animation: fade 1s ease-in-out;
   }
-
   @keyframes fade {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-
-  /* ปุ่มลูกศร */
   .prev, .next {
     position: absolute;
     top: 50%;
@@ -94,36 +114,7 @@
   .prev { left: 5%; }
   .next { right: 5%; }
 
-  /* หัวใจ */
-  .heart {
-    position: fixed;
-    bottom: 0;
-    font-size: 24px;
-    animation: floatUp 6s linear forwards;
-    opacity: 0.7;
-    pointer-events: none;
-  }
-  @keyframes floatUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-600px); opacity: 0; }
-  }
-
-  /* ดาว */
-  .star {
-    position: absolute;
-    width: 2px;
-    height: 2px;
-    background: white;
-    border-radius: 50%;
-    opacity: 0.8;
-    animation: twinkle 2s infinite alternate;
-  }
-  @keyframes twinkle {
-    from { opacity: 0.2; transform: scale(1); }
-    to { opacity: 1; transform: scale(1.6); }
-  }
-
-  /* popup อวยพร */
+  /* Popup */
   .wish-box {
     display: none;
     position: fixed;
@@ -135,99 +126,89 @@
     padding: 20px;
     border-radius: 15px;
     box-shadow: 0 0 25px rgba(255,105,180,0.8);
-    z-index: 999;
+    z-index: 1000;
     font-size: 1.2em;
   }
 </style>
 </head>
 <body>
-  <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
-  <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนเองได้ 💌</p>
 
-  <!-- ปุ่ม -->
-  <button onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button>
+  <!-- Intro ก่อนเข้าหน้าหลัก -->
+  <div id="intro">
+    <h1>วันนี้วันเกิดใครน้าาาา 🎂</h1>
+    <button onclick="enterSite()">เค้าเอง 🎉</button>
+  </div>
 
-  <!-- เพลง -->
-  <audio id="bgMusic" autoplay loop>
-    <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
-  </audio>
+  <!-- หน้าหลัก -->
+  <div id="main">
+    <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
+    <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนเองได้ 💌</p>
 
-  <!-- สไลด์โชว์ -->
-  <div class="slideshow">
-    <img src="https://picsum.photos/id/1011/1000/600" class="active" onclick="showWish('💖 ขอให้มีความสุขมากๆ ในทุกๆ วัน!')">
-    <img src="https://picsum.photos/id/1015/1000/600" onclick="showWish('🎂 สุขภาพแข็งแรง ร่ำรวยๆ เฮงๆ นะ!')">
-    <img src="https://picsum.photos/id/1016/1000/600" onclick="showWish('✨ สมหวังในทุกสิ่งที่ตั้งใจ!')">
+    <!-- ปุ่มเพลง -->
+    <button onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button>
 
-    <!-- ปุ่มลูกศร -->
-    <button class="prev" onclick="changeSlide(-1)">❮</button>
-    <button class="next" onclick="changeSlide(1)">❯</button>
+    <!-- เพลง -->
+    <audio id="bgMusic" loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- สไลด์โชว์ -->
+    <div class="slideshow">
+      <img src="https://picsum.photos/id/1011/1000/600" class="active" onclick="showWish('💖 ขอให้มีความสุขมากๆ ในทุกๆ วัน!')">
+      <img src="https://picsum.photos/id/1015/1000/600" onclick="showWish('🎂 สุขภาพแข็งแรง ร่ำรวยๆ เฮงๆ นะ!')">
+      <img src="https://picsum.photos/id/1016/1000/600" onclick="showWish('✨ สมหวังในทุกสิ่งที่ตั้งใจ!')">
+
+      <button class="prev" onclick="changeSlide(-1)">❮</button>
+      <button class="next" onclick="changeSlide(1)">❯</button>
+    </div>
   </div>
 
   <!-- popup -->
   <div id="wishPopup" class="wish-box"></div>
 
-  <script>
-    // 🎵 Toggle เพลง
-    const music = document.getElementById("bgMusic");
-    function toggleMusic() {
-      if (music.paused) {
-        music.play();
-      } else {
-        music.pause();
-      }
+<script>
+  // เข้าหน้าหลัก
+  function enterSite() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("main").style.display = "block";
+    document.getElementById("bgMusic").play(); // เริ่มเพลงทันที
+  }
+
+  // 🎵 Toggle เพลง
+  const music = document.getElementById("bgMusic");
+  function toggleMusic() {
+    if (music.paused) {
+      music.play();
+    } else {
+      music.pause();
     }
+  }
 
-    // ❤️ หัวใจลอย
-    function createHeart() {
-      const heart = document.createElement("div");
-      heart.className = "heart";
-      heart.innerHTML = "❤️";
-      heart.style.left = Math.random() * 100 + "vw";
-      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
-      document.body.appendChild(heart);
+  // 💌 popup อวยพร
+  function showWish(message) {
+    const popup = document.getElementById("wishPopup");
+    popup.innerHTML = message + "<br><br><button onclick='closeWish()'>ปิด</button>";
+    popup.style.display = "block";
+  }
+  function closeWish() {
+    document.getElementById("wishPopup").style.display = "none";
+  }
 
-      setTimeout(() => heart.remove(), 5000);
-    }
-    setInterval(createHeart, 1000);
+  // 🔄 สไลด์โชว์
+  let slideIndex = 0;
+  const slides = document.querySelectorAll(".slideshow img");
 
-    // 💌 popup อวยพร
-    function showWish(message) {
-      const popup = document.getElementById("wishPopup");
-      popup.innerHTML = message + "<br><br><button onclick='closeWish()'>ปิด</button>";
-      popup.style.display = "block";
-    }
-    function closeWish() {
-      document.getElementById("wishPopup").style.display = "none";
-    }
-
-    // 🌌 สร้างดาว
-    for (let i = 0; i < 40; i++) {
-      let star = document.createElement("div");
-      star.className = "star";
-      star.style.top = Math.random() * window.innerHeight + "px";
-      star.style.left = Math.random() * window.innerWidth + "px";
-      star.style.animationDuration = (1 + Math.random() * 2) + "s";
-      document.body.appendChild(star);
-    }
-
-    // 🔄 สไลด์โชว์
-    let slideIndex = 0;
-    const slides = document.querySelectorAll(".slideshow img");
-
-    function showSlide(n) {
-      slides.forEach((slide, i) => {
-        slide.classList.remove("active");
-        if (i === n) slide.classList.add("active");
-      });
-    }
-
-    function changeSlide(n) {
-      slideIndex = (slideIndex + n + slides.length) % slides.length;
-      showSlide(slideIndex);
-    }
-
-    // auto play
-    setInterval(() => { changeSlide(1); }, 5000);
-  </script>
+  function showSlide(n) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove("active");
+      if (i === n) slide.classList.add("active");
+    });
+  }
+  function changeSlide(n) {
+    slideIndex = (slideIndex + n + slides.length) % slides.length;
+    showSlide(slideIndex);
+  }
+  setInterval(() => { changeSlide(1); }, 5000); // auto play
+</script>
 </body>
 </html>

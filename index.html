@@ -8,17 +8,9 @@
     font-family: 'Poppins', sans-serif;
     margin: 0;
     min-height: 100vh;
-    background: linear-gradient(135deg, #000000, #ff4fac, #4facfe, #000428);
-    background-size: 400% 400%;
-    animation: gradientFlow 15s ease infinite;
+    background: #000; /* ค่า default */
     overflow-x: hidden;
     color: white;
-  }
-
-  @keyframes gradientFlow {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
   }
 
   /* Intro Screen */
@@ -30,7 +22,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: linear-gradient(135deg, #000000, #ff4fac, #4facfe, #000428);
+    background: linear-gradient(135deg, #001f3f, #0074D9, #7FDBFF); /* สีน้ำเงิน gradient */
     background-size: 400% 400%;
     animation: gradientFlow 15s ease infinite;
     z-index: 999;
@@ -38,24 +30,24 @@
   }
   #intro h1 {
     font-size: 2.5em;
-    text-shadow: 0 0 8px #ff4fac, 0 0 16px #4facfe;
+    text-shadow: 0 0 8px #00c0ff, 0 0 16px #0074D9;
     margin-bottom: 20px;
   }
   #intro button {
     padding: 12px 30px;
     border: none;
     border-radius: 30px;
-    background: linear-gradient(45deg, #ff4fac, #4facfe);
+    background: linear-gradient(45deg, #00c0ff, #0074D9);
     color: white;
     font-weight: bold;
     font-size: 1.3em;
     cursor: pointer;
-    box-shadow: 0 0 15px rgba(255,105,180,0.8);
+    box-shadow: 0 0 15px rgba(0,192,255,0.8);
     transition: 0.3s;
   }
   #intro button:hover {
     transform: scale(1.1);
-    box-shadow: 0 0 25px #ff4fac, 0 0 40px #4facfe;
+    box-shadow: 0 0 25px #00c0ff, 0 0 40px #0074D9;
   }
 
   /* Main Content */
@@ -63,6 +55,10 @@
     display: none;
     text-align: center;
     padding-bottom: 50px;
+    background: #000;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
   }
   h1 {
     margin-top: 30px;
@@ -129,30 +125,61 @@
     z-index: 1000;
     font-size: 1.2em;
   }
+
+  /* หัวใจ */
+  .heart {
+    position: fixed;
+    bottom: 0;
+    font-size: 24px;
+    animation: floatUp 6s linear forwards;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-600px); opacity: 0; }
+  }
+
+  /* ดาว */
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 2s infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.6); }
+  }
 </style>
 </head>
 <body>
 
-  <!-- Intro ก่อนเข้าหน้าหลัก -->
+  <!-- Intro -->
   <div id="intro">
     <h1>วันนี้วันเกิดใครน้าาาา 🎂</h1>
     <button onclick="enterSite()">เค้าเอง 🎉</button>
   </div>
 
-  <!-- หน้าหลัก -->
+  <!-- Main -->
   <div id="main">
     <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
     <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนเองได้ 💌</p>
 
-    <!-- ปุ่มเพลง -->
+    <!-- เพลง & ปุ่ม -->
     <button onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button>
+    <br><br>
+    🔊 ปรับเสียง: <input type="range" min="0" max="1" step="0.1" value="0.5" onchange="setVolume(this.value)">
 
     <!-- เพลง -->
     <audio id="bgMusic" loop>
       <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
     </audio>
 
-    <!-- สไลด์โชว์ -->
+    <!-- Slideshow -->
     <div class="slideshow">
       <img src="https://picsum.photos/id/1011/1000/600" class="active" onclick="showWish('💖 ขอให้มีความสุขมากๆ ในทุกๆ วัน!')">
       <img src="https://picsum.photos/id/1015/1000/600" onclick="showWish('🎂 สุขภาพแข็งแรง ร่ำรวยๆ เฮงๆ นะ!')">
@@ -163,28 +190,29 @@
     </div>
   </div>
 
-  <!-- popup -->
+  <!-- Popup -->
   <div id="wishPopup" class="wish-box"></div>
 
 <script>
-  // เข้าหน้าหลัก
+  // เข้าเว็บ
   function enterSite() {
     document.getElementById("intro").style.display = "none";
     document.getElementById("main").style.display = "block";
-    document.getElementById("bgMusic").play(); // เริ่มเพลงทันที
+    document.getElementById("bgMusic").play();
+    startEffects();
   }
 
-  // 🎵 Toggle เพลง
+  // เพลง
   const music = document.getElementById("bgMusic");
   function toggleMusic() {
-    if (music.paused) {
-      music.play();
-    } else {
-      music.pause();
-    }
+    if (music.paused) { music.play(); }
+    else { music.pause(); }
+  }
+  function setVolume(val) {
+    music.volume = val;
   }
 
-  // 💌 popup อวยพร
+  // popup อวยพร
   function showWish(message) {
     const popup = document.getElementById("wishPopup");
     popup.innerHTML = message + "<br><br><button onclick='closeWish()'>ปิด</button>";
@@ -194,10 +222,9 @@
     document.getElementById("wishPopup").style.display = "none";
   }
 
-  // 🔄 สไลด์โชว์
+  // slideshow
   let slideIndex = 0;
   const slides = document.querySelectorAll(".slideshow img");
-
   function showSlide(n) {
     slides.forEach((slide, i) => {
       slide.classList.remove("active");
@@ -208,7 +235,31 @@
     slideIndex = (slideIndex + n + slides.length) % slides.length;
     showSlide(slideIndex);
   }
-  setInterval(() => { changeSlide(1); }, 5000); // auto play
+  setInterval(() => { changeSlide(1); }, 5000);
+
+  // Effects
+  function startEffects() {
+    // หัวใจ
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }, 1000);
+
+    // ดาว
+    for (let i = 0; i < 40; i++) {
+      let star = document.createElement("div");
+      star.className = "star";
+      star.style.top = Math.random() * window.innerHeight + "px";
+      star.style.left = Math.random() * window.innerWidth + "px";
+      star.style.animationDuration = (1 + Math.random() * 2) + "s";
+      document.getElementById("main").appendChild(star);
+    }
+  }
 </script>
 </body>
 </html>

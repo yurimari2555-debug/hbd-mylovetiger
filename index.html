@@ -9,12 +9,7 @@
       background: linear-gradient(135deg, #ffdde1, #ee9ca7);
       text-align: center;
       margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
+      padding: 20px;
     }
 
     h1 {
@@ -22,10 +17,6 @@
       margin-bottom: 20px;
       color: #fff;
       text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-    }
-
-    .nav {
-      margin: 20px 0;
     }
 
     .nav button {
@@ -48,12 +39,7 @@
 
     .page {
       display: none;
-      background: rgba(255,255,255,0.8);
-      padding: 20px;
-      margin: 15px auto;
-      border-radius: 15px;
-      max-width: 500px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      margin-top: 20px;
     }
 
     .active {
@@ -66,11 +52,25 @@
       to {opacity: 1; transform: translateY(0);}
     }
 
-    img {
-      max-width: 200px;
+    .card {
+      background: #fff;
+      padding: 15px;
+      border-radius: 15px;
+      margin: 15px auto;
+      max-width: 400px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      text-align: left;
+    }
+
+    .card img {
+      max-width: 100%;
       border-radius: 10px;
-      margin: 10px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      margin-bottom: 10px;
+    }
+
+    .card p {
+      font-size: 1em;
+      margin: 0;
     }
   </style>
 </head>
@@ -80,8 +80,7 @@
   <!-- เมนู -->
   <div class="nav">
     <button onclick="showPage('home')">หน้าแรก</button>
-    <button onclick="showPage('gallery')">แกลเลอรี</button>
-    <button onclick="showPage('messages')">ข้อความ</button>
+    <button onclick="showPage('gallery')">รูป + ข้อความ</button>
   </div>
 
   <!-- หน้าแรก -->
@@ -90,49 +89,38 @@
     <p>เว็บนี้เก็บความทรงจำพิเศษของฉัน 💖</p>
   </div>
 
-  <!-- แกลเลอรี -->
+  <!-- หน้าแนบรูปกับข้อความ -->
   <div id="gallery" class="page">
-    <h2>📸 อัปโหลดรูปภาพ</h2>
-    <input type="file" id="imageInput" accept="image/*">
-    <div id="imageContainer"></div>
-  </div>
+    <h2>📸 เขียนโพสต์พร้อมรูป</h2>
+    <input type="file" id="imageInput" accept="image/*"><br><br>
+    <textarea id="msgInput" rows="3" style="width:90%;border-radius:10px;padding:10px;" placeholder="พิมพ์ข้อความ..."></textarea><br>
+    <button onclick="addPost()">โพสต์</button>
 
-  <!-- ข้อความ -->
-  <div id="messages" class="page">
-    <h2>💌 ฝากข้อความ</h2>
-    <textarea id="msgInput" rows="4" style="width:90%;border-radius:10px;padding:10px;"></textarea><br>
-    <button onclick="addMessage()">ส่งข้อความ</button>
-    <ul id="msgList"></ul>
+    <div id="postContainer"></div>
   </div>
 
   <script>
-    // เปลี่ยนหน้า
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
     }
 
-    // แกลเลอรี
-    document.getElementById("imageInput").addEventListener("change", (e) => {
-      const file = e.target.files[0];
-      if (file) {
+    function addPost() {
+      const fileInput = document.getElementById("imageInput");
+      const msg = document.getElementById("msgInput").value;
+      const container = document.getElementById("postContainer");
+
+      if (fileInput.files.length === 0 && msg.trim() === "") {
+        alert("กรุณาเลือกรูปหรือใส่ข้อความอย่างน้อยหนึ่งอย่าง");
+        return;
+      }
+
+      const card = document.createElement("div");
+      card.classList.add("card");
+
+      if (fileInput.files.length > 0) {
+        const file = fileInput.files[0];
         const url = URL.createObjectURL(file);
         const img = document.createElement("img");
         img.src = url;
-        document.getElementById("imageContainer").appendChild(img);
-      }
-    });
-
-    // ข้อความ
-    function addMessage() {
-      const msg = document.getElementById("msgInput").value;
-      if (msg.trim() !== "") {
-        const li = document.createElement("li");
-        li.textContent = msg;
-        document.getElementById("msgList").appendChild(li);
-        document.getElementById("msgInput").value = "";
-      }
-    }
-  </script>
-</body>
-</html>
+        ca

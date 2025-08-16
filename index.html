@@ -4,11 +4,74 @@
   <meta charset="UTF-8">
   <title>My Birthday Web</title>
   <style>
-    body { font-family: sans-serif; text-align: center; }
-    .page { display: none; }
-    .active { display: block; }
-    img { max-width: 200px; margin: 10px; border-radius: 8px; }
-    .nav button { margin: 5px; padding: 8px 12px; }
+    body {
+      font-family: "Sarabun", sans-serif;
+      background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    }
+
+    .nav {
+      margin: 20px 0;
+    }
+
+    .nav button {
+      background: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 25px;
+      font-size: 1em;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+    }
+
+    .nav button:hover {
+      background: #ff7eb9;
+      color: #fff;
+      transform: translateY(-3px);
+    }
+
+    .page {
+      display: none;
+      background: rgba(255,255,255,0.8);
+      padding: 20px;
+      margin: 15px auto;
+      border-radius: 15px;
+      max-width: 500px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+
+    .active {
+      display: block;
+      animation: fadeIn 0.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {opacity: 0; transform: translateY(20px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    img {
+      max-width: 200px;
+      border-radius: 10px;
+      margin: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
   </style>
 </head>
 <body>
@@ -23,94 +86,52 @@
 
   <!-- หน้าแรก -->
   <div id="home" class="page active">
-    <h2>ยินดีต้อนรับ 🥳</h2>
-    <p>เว็บนี้เก็บความทรงจำของฉัน 💖</p>
+    <h2>👋 ยินดีต้อนรับ</h2>
+    <p>เว็บนี้เก็บความทรงจำพิเศษของฉัน 💖</p>
   </div>
 
   <!-- แกลเลอรี -->
   <div id="gallery" class="page">
-    <h2>อัปโหลดรูปภาพ</h2>
+    <h2>📸 อัปโหลดรูปภาพ</h2>
     <input type="file" id="imageInput" accept="image/*">
     <div id="imageContainer"></div>
   </div>
 
   <!-- ข้อความ -->
   <div id="messages" class="page">
-    <h2>โพสต์ข้อความ</h2>
-    <textarea id="msgInput" rows="3" cols="30" placeholder="เขียนข้อความของคุณ..."></textarea><br>
-    <button onclick="addMessage()">โพสต์ข้อความ</button>
-    <div id="msgContainer"></div>
+    <h2>💌 ฝากข้อความ</h2>
+    <textarea id="msgInput" rows="4" style="width:90%;border-radius:10px;padding:10px;"></textarea><br>
+    <button onclick="addMessage()">ส่งข้อความ</button>
+    <ul id="msgList"></ul>
   </div>
 
   <script>
-    // === ระบบเปลี่ยนหน้า ===
+    // เปลี่ยนหน้า
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
     }
 
-    // === โหลดข้อมูลจาก localStorage ตอนเปิดเว็บ ===
-    window.onload = () => {
-      loadMessages();
-      loadImages();
-    };
-
-    // === อัปโหลดรูป + บันทึกลง localStorage ===
-    document.getElementById("imageInput").addEventListener("change", e => {
+    // แกลเลอรี
+    document.getElementById("imageInput").addEventListener("change", (e) => {
       const file = e.target.files[0];
-      if (!file) return;
-
-      const reader = new FileReader();
-      reader.onload = () => {
-        const imgData = reader.result;
-
-        // แสดงรูป
+      if (file) {
+        const url = URL.createObjectURL(file);
         const img = document.createElement("img");
-        img.src = imgData;
+        img.src = url;
         document.getElementById("imageContainer").appendChild(img);
-
-        // เก็บลง localStorage
-        let images = JSON.parse(localStorage.getItem("images") || "[]");
-        images.push(imgData);
-        localStorage.setItem("images", JSON.stringify(images));
-      };
-      reader.readAsDataURL(file);
+      }
     });
 
-    function loadImages() {
-      let images = JSON.parse(localStorage.getItem("images") || "[]");
-      images.forEach(src => {
-        const img = document.createElement("img");
-        img.src = src;
-        document.getElementById("imageContainer").appendChild(img);
-      });
-    }
-
-    // === โพสต์ข้อความ + บันทึกลง localStorage ===
+    // ข้อความ
     function addMessage() {
-      const text = document.getElementById("msgInput").value.trim();
-      if (!text) return;
-
-      // แสดงข้อความ
-      const p = document.createElement("p");
-      p.textContent = text;
-      document.getElementById("msgContainer").appendChild(p);
-
-      // เก็บลง localStorage
-      let messages = JSON.parse(localStorage.getItem("messages") || "[]");
-      messages.push(text);
-      localStorage.setItem("messages", JSON.stringify(messages));
-
-      document.getElementById("msgInput").value = "";
-    }
-
-    function loadMessages() {
-      let messages = JSON.parse(localStorage.getItem("messages") || "[]");
-      messages.forEach(text => {
-        const p = document.createElement("p");
-        p.textContent = text;
-        document.getElementById("msgContainer").appendChild(p);
-      });
+      const msg = document.getElementById("msgInput").value;
+      if (msg.trim() !== "") {
+        const li = document.createElement("li");
+        li.textContent = msg;
+        document.getElementById("msgList").appendChild(li);
+        document.getElementById("msgInput").value = "";
+      }
     }
   </script>
 </body>

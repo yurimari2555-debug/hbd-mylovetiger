@@ -1,513 +1,117 @@
-# Create a complete single-file birthday webpage with HTML, CSS, and JS.
-import os, textwrap, json, pathlib, sys, re
-
-html = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>สุขสันต์วันเกิด 🥳</title>
-<meta name="description" content="หน้าเว็บอวยพรวันเกิดสุดน่ารัก พร้อมลูกโป่ง เค้ก เป่าเทียน และโปรยคอนเฟตตี้">
-<style>
-  :root{
-    --bg:#0f1226;
-    --card:#15193a;
-    --card-2:#1b2050;
-    --text:#f7f7fb;
-    --muted:#b9c1ff;
-    --accent:#ffd166;
-    --accent-2:#ff6b6b;
-    --accent-3:#7bdff2;
-    --accent-4:#c3f584;
-    --shadow: 0 10px 30px rgba(0,0,0,.35);
-  }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0;
-    background: radial-gradient(1200px 800px at 70% -10%, #2a2f6b22 10%, transparent 60%) , var(--bg);
-    color:var(--text);
-    font-family: ui-sans-serif, -apple-system, system-ui, "Segoe UI", Roboto, "Noto Sans Thai", "Noto Sans", "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
-    overflow-x:hidden;
-  }
-  header{
-    position:relative;
-    padding: clamp(20px, 4vw, 40px);
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    gap:16px;
-    text-align:center;
-  }
-  .badge{
-    display:inline-block;
-    padding:8px 14px;
-    border-radius:999px;
-    background:linear-gradient(45deg, #ff9a9e, #fad0c4);
-    color:#2b2b2b;
-    font-weight:700;
-    box-shadow:var(--shadow);
-  }
-  h1{
-    margin:0;
-    font-size: clamp(26px, 5vw, 48px);
-    line-height:1.1;
-    letter-spacing: .5px;
-  }
-  .subtitle{
-    margin-top:6px;
-    color:var(--muted);
-    font-size:clamp(14px, 2.5vw, 18px);
-  }
-
-  .hero-card{
-    position:relative;
-    width:min(920px, 92vw);
-    margin: 12px auto 24px;
-    border-radius:24px;
-    padding:24px;
-    background: linear-gradient(180deg, var(--card), var(--card-2));
-    box-shadow:var(--shadow);
-    overflow:hidden;
-  }
-
-  .controls{
-    display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:10px;
-  }
-  button{
-    background:#ffffff12;
-    color:var(--text);
-    border:1px solid #ffffff20;
-    padding:10px 16px;
-    border-radius:12px;
-    cursor:pointer;
-    backdrop-filter: blur(6px);
-    font-weight:600;
-    transition: transform .12s ease, background .2s ease, border-color .2s ease;
-  }
-  button:hover{ transform: translateY(-1px); background:#ffffff1e; border-color:#ffffff40; }
-  button:active{ transform: translateY(1px) scale(.98); }
-
-  /* Floating balloons */
-  .balloons{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
-  .balloon{
-    position:absolute;
-    bottom:-120px;
-    width: var(--s, 30px);
-    height: calc(var(--s,30px) * 1.25);
-    background: radial-gradient(circle at 30% 30%, #fff8, transparent 35%), var(--c,#ff6b6b);
-    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
-    box-shadow:0 10px 20px #0004;
-    animation: rise var(--t,10s) linear infinite;
-    opacity:.9;
-  }
-  .balloon::after{
-    content:"";
-    position:absolute;
-    left:50%;
-    transform:translateX(-50%);
-    bottom:-16px;
-    width:2px; height:24px;
-    background:#ffffff33;
-  }
-  @keyframes rise {
-    from { transform: translateY(0) translateX(0) rotate(0deg); }
-    to { transform: translateY(-120vh) translateX(var(--x,0)) rotate(6deg); }
-  }
-
-  /* Cake */
-  .cake-wrap{ display:flex; flex-direction:column; align-items:center; gap:14px; margin-top:8px;}
-  .cake{
-    position:relative;
-    width:min(500px, 86vw);
-    aspect-ratio: 5/3;
-    display:grid;
-    place-items:end center;
-  }
-  .plate{
-    width:80%;
-    height:16%;
-    background:linear-gradient(#bcdcff, #8aa6ff);
-    border-radius: 50px;
-    box-shadow: inset 0 -8px 16px #0003;
-  }
-  .body1{
-    position:absolute; bottom:16%;
-    width:64%; height:42%;
-    background: linear-gradient(#fff0f0, #ffd7d7);
-    border-radius: 16px 16px 10px 10px;
-    box-shadow: 0 10px 20px #0004, inset 0 -10px 18px #0002;
-  }
-  .drip{ position:absolute; bottom: calc(16% + 40%); width:10px; height:16px; background:#ffe1e1; border-radius: 10px; box-shadow:0 6px 0 0 #fbd0d0; }
-  .stripe{ position:absolute; bottom:calc(16% + 10%); width:64%; height:12%; background:repeating-linear-gradient(45deg, #ffc0cb 0 16px, #ffd6e8 16px 32px); border-radius:10px; }
-  .candle{
-    position:absolute; bottom: calc(16% + 42%);
-    width:10px; height:40px; background: repeating-linear-gradient(90deg, #ffe2a1 0 6px, #ffd166 6px 12px);
-    border-radius: 6px;
-    left:50%; transform:translateX(-50%);
-  }
-  .flame{
-    --size: 16px;
-    position:absolute; bottom: calc(16% + 42% + 38px);
-    left:50%; transform:translateX(-50%);
-    width:var(--size); height:calc(var(--size) * 1.3);
-    background: radial-gradient(circle at 45% 30%, #fff, #ffd166 60%, #ff7b00 100%);
-    border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
-    filter: blur(.4px) drop-shadow(0 0 12px #ffcf33);
-    animation: flicker .18s infinite alternate;
-    transform-origin: bottom center;
-  }
-  @keyframes flicker{
-    from { transform: translateX(-50%) scale(1) rotate(-2deg); }
-    to   { transform: translateX(-50%) scale(1.07) rotate(2deg); }
-  }
-
-  /* Messages */
-  .msg{
-    margin:16px auto 0;
-    max-width:720px;
-    text-align:center;
-    color:var(--text);
-    font-size: clamp(16px, 2.6vw, 20px);
-  }
-  .msg .muted{ color:var(--muted); font-size:.95em; }
-  .marquee{
-    margin-top:12px;
-    font-weight:700;
-    white-space:nowrap;
-    overflow:hidden;
-    mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent 100%);
-  }
-  .marquee span{ display:inline-block; padding-right:30px; animation: marquee 16s linear infinite; }
-  @keyframes marquee { from{ transform:translateX(0)} to{ transform:translateX(-50%)} }
-
-  /* Gallery uploader */
-  section{
-    width:min(920px, 92vw);
-    margin: 20px auto 60px;
-    padding: 18px;
-    background: linear-gradient(180deg, var(--card), var(--card-2));
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-  }
-  .section-title{ margin:0 0 10px; font-size: clamp(18px, 3.6vw, 22px); color:var(--muted); }
-  .uploader{ display:flex; flex-direction:column; gap:10px; align-items:center; }
-  .grid{
-    display:grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap:10px; margin-top:12px;
-  }
-  .grid img{
-    width:100%; aspect-ratio:1/1; object-fit:cover; border-radius:12px; box-shadow:0 8px 16px #0004;
-  }
-
-  footer{
-    text-align:center; color:#a6afff; padding:30px 10px 60px; font-size:14px;
-  }
-
-  /* Confetti canvas sits on top */
-  #confetti {
-    position: fixed;
-    inset:0;
-    pointer-events:none;
-  }
-
-  /* Dialog */
-  dialog{
-    border:none; border-radius:16px; padding:18px 16px; max-width:min(520px, 92vw);
-    background:linear-gradient(180deg, #20265a, #1b2050);
-    color:var(--text);
-    box-shadow: var(--shadow);
-  }
-  dialog::backdrop{ background:#0007; backdrop-filter: blur(2px); }
-  .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:8px 0; }
-  input, textarea{
-    background:#ffffff10; border:1px solid #ffffff22; color:var(--text);
-    border-radius:10px; padding:10px; width:100%;
-  }
-  label{ font-size:14px; color:var(--muted); }
-</style>
+  <meta charset="UTF-8">
+  <title>My Birthday Web</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; }
+    .page { display: none; }
+    .active { display: block; }
+    img { max-width: 200px; margin: 10px; border-radius: 8px; }
+    .nav button { margin: 5px; padding: 8px 12px; }
+  </style>
 </head>
 <body>
-<canvas id="confetti"></canvas>
+  <h1>🎉 HBD to Me 🎉</h1>
 
-<header>
-  <span class="badge">HBD Web</span>
-  <h1 id="title">สุขสันต์วันเกิด, <span id="name">ที่รัก</span> 🎉</h1>
-  <div class="subtitle">ขอให้วันนี้เต็มไปด้วยรอยยิ้ม สมหวัง และสิ่งดี ๆ ทั้งหมดสำหรับคุณ</div>
-
-  <div class="controls">
-    <button id="blow">เป่าเทียน 🎂</button>
-    <button id="music">เปิดเพลง ♫</button>
-    <button id="edit">แก้ไขชื่อ/ข้อความ ✏️</button>
-    <button id="share">แชร์ลิงก์เว็บนี้ 🔗</button>
+  <!-- เมนู -->
+  <div class="nav">
+    <button onclick="showPage('home')">หน้าแรก</button>
+    <button onclick="showPage('gallery')">แกลเลอรี</button>
+    <button onclick="showPage('messages')">ข้อความ</button>
   </div>
-</header>
 
-<div class="hero-card">
-  <div class="balloons" id="balloons"></div>
-
-  <div class="cake-wrap">
-    <div class="cake" aria-label="เค้กวันเกิด">
-      <div class="plate"></div>
-      <div class="body1"></div>
-      <div class="stripe"></div>
-      <div class="drip" style="left:34%"></div>
-      <div class="drip" style="left:44%"></div>
-      <div class="drip" style="left:56%"></div>
-      <div class="drip" style="left:66%"></div>
-      <div class="candle"></div>
-      <div class="flame" id="flame" aria-hidden="false"></div>
-    </div>
-
-    <p class="msg" id="wish">
-      วันนี้เป็นของคุณ — <strong>ขอให้มีความสุขมาก ๆ</strong> สุขภาพดี งานปัง รักมั่นคงนะ 💖
-      <br><span class="muted">กด “เป่าเทียน” เพื่อฉลองพร้อมคอนเฟตตี้ 🎊</span>
-    </p>
-
-    <div class="marquee">
-      <span id="ticker">Happy Birthday • รักที่สุดในโลก • ขอให้สมหวังทุกอย่าง • มีความสุขในทุก ๆ วัน • </span>
-    </div>
+  <!-- หน้าแรก -->
+  <div id="home" class="page active">
+    <h2>ยินดีต้อนรับ 🥳</h2>
+    <p>เว็บนี้เก็บความทรงจำของฉัน 💖</p>
   </div>
-</div>
 
-<section>
-  <h3 class="section-title">อัลบั้มรูปความทรงจำ</h3>
-  <div class="uploader">
-    <label>เพิ่มรูปของเรา (.jpg/.png) ได้หลายรูปพร้อมกัน</label>
-    <input type="file" id="file" accept="image/*" multiple />
-    <div class="grid" id="grid"></div>
+  <!-- แกลเลอรี -->
+  <div id="gallery" class="page">
+    <h2>อัปโหลดรูปภาพ</h2>
+    <input type="file" id="imageInput" accept="image/*">
+    <div id="imageContainer"></div>
   </div>
-</section>
 
-<footer>
-  สร้างด้วยความรัก • ทำให้คุณโดยเฉพาะ 💝
-</footer>
+  <!-- ข้อความ -->
+  <div id="messages" class="page">
+    <h2>โพสต์ข้อความ</h2>
+    <textarea id="msgInput" rows="3" cols="30" placeholder="เขียนข้อความของคุณ..."></textarea><br>
+    <button onclick="addMessage()">โพสต์ข้อความ</button>
+    <div id="msgContainer"></div>
+  </div>
 
-<dialog id="editor">
-  <form method="dialog">
-    <h3 style="margin:0 0 6px">ปรับแต่งอย่างรวดเร็ว</h3>
-    <div class="row">
-      <label for="nameInput">ชื่อแฟน</label>
-      <input id="nameInput" placeholder="เช่น แพรว/ฟ้า/ไตตั้น" />
-    </div>
-    <div class="row">
-      <label for="wishInput">ข้อความอวยพร</label>
-      <textarea id="wishInput" rows="3" placeholder="พิมพ์ข้อความหวาน ๆ ที่นี่"></textarea>
-    </div>
-    <div class="row" style="justify-content:flex-end">
-      <button value="cancel">ยกเลิก</button>
-      <button id="save" value="default">บันทึก</button>
-    </div>
-  </form>
-</dialog>
-
-<script>
-// ---- Quick personalization (saved in localStorage) ----
-const $ = (q)=>document.querySelector(q);
-const nameEl = $("#name");
-const titleEl = $("#title");
-const wishEl = $("#wish");
-const TICKER_TEXT_DEFAULT = "Happy Birthday • รักที่สุดในโลก • ขอให้สมหวังทุกอย่าง • มีความสุขในทุก ๆ วัน • ";
-
-const store = {
-  get key(){ return "hbd-config-v1"; },
-  load(){
-    try{ return JSON.parse(localStorage.getItem(this.key)) || {}; }catch(e){ return {}; }
-  },
-  save(cfg){
-    localStorage.setItem(this.key, JSON.stringify(cfg));
-  }
-};
-
-function applyConfig(cfg){
-  if(cfg.name){
-    nameEl.textContent = cfg.name;
-    document.title = `สุขสันต์วันเกิด, ${cfg.name} 🥳`;
-  }
-  if(cfg.wish){
-    wishEl.innerHTML = cfg.wish;
-  }
-  $("#ticker").textContent = cfg.ticker || TICKER_TEXT_DEFAULT;
-}
-
-// initial
-applyConfig(store.load());
-
-// ---- Balloons generator ----
-const balloonColors = ["#ff6b6b","#ffd166","#7bdff2","#c3f584","#b088f9","#ff9a9e"];
-const balloonsWrap = $("#balloons");
-function spawnBalloon(){
-  const b = document.createElement("div");
-  b.className = "balloon";
-  const s = 24 + Math.random()*28; // size
-  b.style.setProperty("--s", s + "px");
-  b.style.left = (Math.random()*100) + "%";
-  b.style.setProperty("--t", (10 + Math.random()*10) + "s");
-  b.style.setProperty("--c", balloonColors[Math.floor(Math.random()*balloonColors.length)]);
-  b.style.setProperty("--x", (Math.random()<0.5?-1:1) * (20 + Math.random()*60) + "px");
-  balloonsWrap.appendChild(b);
-  // cleanup after animation
-  setTimeout(()=>b.remove(), 20000);
-}
-setInterval(spawnBalloon, 800);
-for(let i=0;i<12;i++) setTimeout(spawnBalloon, 120*i);
-
-// ---- Confetti (simple canvas particles) ----
-const canvas = document.getElementById("confetti");
-const ctx = canvas.getContext("2d");
-let W, H; function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; } resize(); addEventListener("resize", resize);
-const COLORS = ["#ffd166","#ff6b6b","#7bdff2","#c3f584","#b088f9","#f9f871"];
-let confetti = [];
-
-function burstConfetti(x=W/2, y=H*0.35, n=120){
-  for(let i=0;i<n;i++){
-    confetti.push({
-      x, y,
-      vx: (Math.random()*2-1) * (4 + Math.random()*3),
-      vy: (-6 - Math.random()*6),
-      g: 0.2 + Math.random()*0.15,
-      s: 4 + Math.random()*6,
-      r: Math.random()*Math.PI,
-      vr: (Math.random()-.5)*0.25,
-      c: COLORS[(Math.random()*COLORS.length)|0],
-      life: 120 + Math.random()*40
-    });
-  }
-}
-
-function drawConfetti(){
-  ctx.clearRect(0,0,W,H);
-  confetti.forEach(p=>{
-    p.vy += p.g;
-    p.x += p.vx;
-    p.y += p.vy;
-    p.r += p.vr;
-    p.life -= 1;
-    ctx.save();
-    ctx.translate(p.x, p.y);
-    ctx.rotate(p.r);
-    ctx.fillStyle = p.c;
-    ctx.fillRect(-p.s/2, -p.s/2, p.s, p.s);
-    ctx.restore();
-  });
-  confetti = confetti.filter(p=> p.life>0 && p.y < H + 30);
-  requestAnimationFrame(drawConfetti);
-}
-drawConfetti();
-
-// ---- Candle blowing ----
-const flame = $("#flame");
-$("#blow").addEventListener("click", ()=>{
-  flame.style.display = "none"; // hide flame
-  burstConfetti();
-  // bring flame back after 3s for replay
-  setTimeout(()=>{ flame.style.display = "block"; }, 3200);
-});
-
-// ---- Tiny music with WebAudio (no external files) ----
-let audioCtx, seqRunning = false;
-function playMelody(){
-  if(seqRunning) return;
-  const melody = [
-    // Simple "HBD" phrase in C major (note, duration in beats)
-    ["G4",0.5],["G4",0.5],["A4",1],["G4",1],["C5",1],["B4",2],
-    ["G4",0.5],["G4",0.5],["A4",1],["G4",1],["D5",1],["C5",2]
-  ];
-  const bpm = 120;
-  const beat = 60/bpm;
-
-  audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
-  const now = audioCtx.currentTime + 0.05;
-  let t = now;
-
-  function freq(n){ // n like "C4"
-    const A4 = 440;
-    const NOTES = {"C":-9,"C#":-8,"Db":-8,"D":-7,"D#":-6,"Eb":-6,"E":-5,"F":-4,"F#":-3,"Gb":-3,"G":-2,"G#":-1,"Ab":-1,"A":0,"A#":1,"Bb":1,"B":2};
-    const m = n.match(/^([A-G]#?b?)(\d)$/); if(!m) return A4;
-    const semis = (parseInt(m[2])-4)*12 + (NOTES[m[1]]||0);
-    return A4 * Math.pow(2, semis/12);
-  }
-
-  melody.forEach(([note,dur])=>{
-    const o = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    o.type = "sine";
-    o.frequency.value = freq(note);
-    o.connect(g); g.connect(audioCtx.destination);
-    // envelope
-    const a = 0.02, d = 0.08, s = 0.65, r = 0.12;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.9, t+a);
-    g.gain.linearRampToValueAtTime(0.6, t+a+d);
-    g.gain.setValueAtTime(0.6, t + beat*dur - r);
-    g.gain.linearRampToValueAtTime(0, t + beat*dur);
-    o.start(t);
-    o.stop(t + beat*dur + 0.02);
-    t += beat*dur;
-  });
-
-  seqRunning = true;
-  setTimeout(()=> seqRunning=false, (t-now)*1000 + 200);
-}
-
-$("#music").addEventListener("click", playMelody);
-
-// ---- Editor dialog ----
-const dlg = $("#editor");
-$("#edit").addEventListener("click", ()=>{
-  $("#nameInput").value = nameEl.textContent;
-  $("#wishInput").value = wishEl.innerHTML;
-  dlg.showModal();
-});
-$("#save").addEventListener("click", (e)=>{
-  e.preventDefault();
-  const cfg = store.load();
-  cfg.name = $("#nameInput").value.trim() || "ที่รัก";
-  cfg.wish = $("#wishInput").value.trim() || wishEl.innerHTML;
-  store.save(cfg);
-  applyConfig(cfg);
-  dlg.close();
-});
-
-// ---- Share ----
-$("#share").addEventListener("click", async ()=>{
-  try{
-    const shareData = {
-      title: document.title,
-      text: "เปิดเว็บอวยพรวันเกิดของคุณเลย!",
-      url: location.href
-    };
-    if(navigator.share){ await navigator.share(shareData); }
-    else{
-      await navigator.clipboard.writeText(location.href);
-      alert("คัดลอกลิงก์แล้ว วางส่งให้แฟนได้เลย!");
+  <script>
+    // === ระบบเปลี่ยนหน้า ===
+    function showPage(pageId) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
     }
-  }catch(e){ console.log(e); }
-});
 
-// ---- Gallery uploader ----
-const grid = $("#grid");
-$("#file").addEventListener("change", (e)=>{
-  const files = [...e.target.files].slice(0, 36); // limit
-  files.forEach(f=>{
-    const url = URL.createObjectURL(f);
-    const img = new Image();
-    img.onload = ()=> URL.revokeObjectURL(url);
-    img.src = url;
-    grid.appendChild(img);
-  });
-});
+    // === โหลดข้อมูลจาก localStorage ตอนเปิดเว็บ ===
+    window.onload = () => {
+      loadMessages();
+      loadImages();
+    };
 
-</script>
+    // === อัปโหลดรูป + บันทึกลง localStorage ===
+    document.getElementById("imageInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        const imgData = reader.result;
+
+        // แสดงรูป
+        const img = document.createElement("img");
+        img.src = imgData;
+        document.getElementById("imageContainer").appendChild(img);
+
+        // เก็บลง localStorage
+        let images = JSON.parse(localStorage.getItem("images") || "[]");
+        images.push(imgData);
+        localStorage.setItem("images", JSON.stringify(images));
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function loadImages() {
+      let images = JSON.parse(localStorage.getItem("images") || "[]");
+      images.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        document.getElementById("imageContainer").appendChild(img);
+      });
+    }
+
+    // === โพสต์ข้อความ + บันทึกลง localStorage ===
+    function addMessage() {
+      const text = document.getElementById("msgInput").value.trim();
+      if (!text) return;
+
+      // แสดงข้อความ
+      const p = document.createElement("p");
+      p.textContent = text;
+      document.getElementById("msgContainer").appendChild(p);
+
+      // เก็บลง localStorage
+      let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+      messages.push(text);
+      localStorage.setItem("messages", JSON.stringify(messages));
+
+      document.getElementById("msgInput").value = "";
+    }
+
+    function loadMessages() {
+      let messages = JSON.parse(localStorage.getItem("messages") || "[]");
+      messages.forEach(text => {
+        const p = document.createElement("p");
+        p.textContent = text;
+        document.getElementById("msgContainer").appendChild(p);
+      });
+    }
+  </script>
 </body>
 </html>
-"""
-
-outdir = "/mnt/data/birthday_web"
-os.makedirs(outdir, exist_ok=True)
-path = os.path.join(outdir, "index.html")
-with open(path, "w", encoding="utf-8") as f:
-    f.write(html)
-
-path

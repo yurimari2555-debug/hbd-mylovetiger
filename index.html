@@ -62,6 +62,7 @@
     box-shadow: 0 0 15px rgba(255,255,255,0.6);
     display: none;
     cursor: pointer;
+    margin: auto;
   }
   .slideshow img.active {
     display: block;
@@ -72,6 +73,26 @@
     from { opacity: 0; }
     to { opacity: 1; }
   }
+
+  /* ปุ่มลูกศร */
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.4);
+    color: white;
+    border: none;
+    font-size: 2em;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  .prev:hover, .next:hover {
+    background: rgba(255, 79, 172, 0.8);
+  }
+  .prev { left: 5%; }
+  .next { right: 5%; }
 
   /* หัวใจ */
   .heart {
@@ -121,7 +142,7 @@
 </head>
 <body>
   <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
-  <p>ภาพจะเปลี่ยนอัตโนมัติ และคลิกเพื่อดูคำอวยพร 💌</p>
+  <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนเองได้ 💌</p>
 
   <!-- ปุ่ม -->
   <button onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button>
@@ -136,6 +157,10 @@
     <img src="https://picsum.photos/id/1011/1000/600" class="active" onclick="showWish('💖 ขอให้มีความสุขมากๆ ในทุกๆ วัน!')">
     <img src="https://picsum.photos/id/1015/1000/600" onclick="showWish('🎂 สุขภาพแข็งแรง ร่ำรวยๆ เฮงๆ นะ!')">
     <img src="https://picsum.photos/id/1016/1000/600" onclick="showWish('✨ สมหวังในทุกสิ่งที่ตั้งใจ!')">
+
+    <!-- ปุ่มลูกศร -->
+    <button class="prev" onclick="changeSlide(-1)">❮</button>
+    <button class="next" onclick="changeSlide(1)">❯</button>
   </div>
 
   <!-- popup -->
@@ -188,12 +213,21 @@
     // 🔄 สไลด์โชว์
     let slideIndex = 0;
     const slides = document.querySelectorAll(".slideshow img");
-    function showSlides() {
-      slides[slideIndex].classList.remove("active");
-      slideIndex = (slideIndex + 1) % slides.length;
-      slides[slideIndex].classList.add("active");
+
+    function showSlide(n) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove("active");
+        if (i === n) slide.classList.add("active");
+      });
     }
-    setInterval(showSlides, 5000); // 5 วิเปลี่ยนภาพ
+
+    function changeSlide(n) {
+      slideIndex = (slideIndex + n + slides.length) % slides.length;
+      showSlide(slideIndex);
+    }
+
+    // auto play
+    setInterval(() => { changeSlide(1); }, 5000);
   </script>
 </body>
 </html>

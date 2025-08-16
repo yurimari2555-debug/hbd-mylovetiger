@@ -199,70 +199,65 @@
     from { opacity: 0.2; transform: scale(1); }
     to { opacity: 1; transform: scale(1.6); }
   }
+
   /* Cake Area */
-#cake-area {
-  margin-top: 30px;
-  text-align: center;
-}
-
-.cake {
-  display: inline-block;
-  position: relative;
-  margin-bottom: 15px;
-}
-
-.candles {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: -10px;
-}
-
-.candle {
-  width: 12px;
-  height: 40px;
-  background: #fff;
-  border-radius: 3px;
-  position: relative;
-}
-.flame {
-  position: absolute;
-  top: -15px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 12px;
-  height: 18px;
-  background: radial-gradient(circle, #ff0 20%, orange 70%, transparent 80%);
-  border-radius: 50% 50% 50% 50%;
-  animation: flicker 0.2s infinite alternate;
-}
-@keyframes flicker {
-  from { transform: translateX(-50%) scale(1); opacity: 1; }
-  to   { transform: translateX(-50%) scale(1.2); opacity: 0.7; }
-}
-
-.cake-body {
-  font-size: 3em;
-  margin-top: -5px;
-}
-
-.blow-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 25px;
-  background: linear-gradient(45deg, #ff9ff3, #74b9ff);
-  color: white;
-  font-size: 1.1em;
-  font-weight: bold;
-  cursor: pointer;
-  box-shadow: 0 0 15px rgba(255, 182, 193, 0.7);
-  transition: 0.3s;
-}
-.blow-btn:hover {
-  transform: scale(1.1);
-  background: linear-gradient(45deg, #ff4fac, #4facfe);
-}
-
+  #cake-area {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .cake {
+    display: inline-block;
+    position: relative;
+    margin-bottom: 15px;
+  }
+  .candles {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: -10px;
+  }
+  .candle {
+    width: 12px;
+    height: 40px;
+    background: #fff;
+    border-radius: 3px;
+    position: relative;
+  }
+  .flame {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 18px;
+    background: radial-gradient(circle, #ff0 20%, orange 70%, transparent 80%);
+    border-radius: 50%;
+    animation: flicker 0.2s infinite alternate;
+  }
+  @keyframes flicker {
+    from { transform: translateX(-50%) scale(1); opacity: 1; }
+    to   { transform: translateX(-50%) scale(1.2); opacity: 0.7; }
+  }
+  .cake-body {
+    font-size: 3em;
+    margin-top: -5px;
+  }
+  .blow-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #ff9ff3, #74b9ff);
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 182, 193, 0.7);
+    transition: 0.3s;
+  }
+  .blow-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(45deg, #ff4fac, #4facfe);
+  }
 </style>
 </head>
 <body>
@@ -296,6 +291,20 @@
 
       <button class="prev" onclick="changeSlide(-1)">❮</button>
       <button class="next" onclick="changeSlide(1)">❯</button>
+    </div>
+
+    <!-- Birthday Cake -->
+    <div id="cake-area">
+      <div class="cake">
+        <div class="candles">
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+          <div class="candle"><div class="flame"></div></div>
+        </div>
+        <div class="cake-body">🎂</div>
+      </div>
+      <br>
+      <button class="blow-btn" onclick="blowCandles()">เป่าเทียน 🕯️</button>
     </div>
   </div>
 
@@ -337,19 +346,6 @@
       slide.classList.remove("active");
       if (i === n) slide.classList.add("active");
     });
-    <!-- Birthday Cake -->
-<div id="cake-area">
-  <div class="cake">
-    <div class="candles">
-      <div class="candle"><div class="flame"></div></div>
-      <div class="candle"><div class="flame"></div></div>
-      <div class="candle"><div class="flame"></div></div>
-    </div>
-    <div class="cake-body">🎂</div>
-  </div>
-  <button class="blow-btn" onclick="blowCandles()">เป่าเทียน 🕯️</button>
-</div>
-
   }
   function changeSlide(n) {
     slideIndex = (slideIndex + n + slides.length) % slides.length;
@@ -379,13 +375,14 @@
       star.style.animationDuration = (1 + Math.random() * 2) + "s";
       document.getElementById("main").appendChild(star);
     }
-    function blowCandles() {
-  const flames = document.querySelectorAll(".flame");
-  flames.forEach(f => f.style.display = "none");
-  alert("🕯️ เทียนดับแล้ว อธิษฐานแล้วนะ! 💖");
-}
+  }
+
+  // blow candles
+  function blowCandles() {
+    const flames = document.querySelectorAll(".flame");
+    flames.forEach(f => f.style.display = "none");
+    alert("🕯️ เทียนดับแล้ว อธิษฐานแล้วนะ! 💖");
   }
 </script>
 </body>
 </html>
-

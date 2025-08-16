@@ -123,4 +123,21 @@
         const url = URL.createObjectURL(file);
         const img = document.createElement("img");
         img.src = url;
-        ca
+        card.appendChild(img);
+      }
+
+      if (msg.trim() !== "") {
+        const p = document.createElement("p");
+        p.textContent = msg;
+        card.appendChild(p);
+      }
+
+      container.appendChild(card);
+
+      // ล้าง input
+      fileInput.value = "";
+      document.getElementById("msgInput").value = "";
+    }
+  </script>
+</body>
+</html>

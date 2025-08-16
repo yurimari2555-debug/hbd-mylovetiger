@@ -13,7 +13,7 @@
     }
 
     h1 {
-      margin-top: 50px;
+      margin-top: 30px;
       font-size: 3em;
       color: white;
       text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
@@ -48,11 +48,30 @@
       0% { transform: translateY(0); opacity: 1; }
       100% { transform: translateY(-600px); opacity: 0; }
     }
+
+    /* แกลลอรี */
+    .gallery {
+      margin-top: 30px;
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .gallery img {
+      width: 180px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
   </style>
 </head>
 <body>
   <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
-  <p>เว็บนี้สำหรับเซอร์ไพรส์วันพิเศษ 💖</p>
+  <p>คลิกที่รูปเพื่อดูคำอวยพร 💌</p>
 
   <!-- ปุ่ม -->
   <button onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button>
@@ -62,6 +81,13 @@
   <audio id="bgMusic" autoplay loop>
     <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
   </audio>
+
+  <!-- แกลลอรี -->
+  <div class="gallery">
+    <img src="https://picsum.photos/id/1011/300/200" onclick="showWish('💖 ขอให้มีความสุขมากๆ ในทุกๆ วัน!')">
+    <img src="https://picsum.photos/id/1015/300/200" onclick="showWish('🎂 สุขภาพแข็งแรง ร่ำรวยๆ เฮงๆ นะ!')">
+    <img src="https://picsum.photos/id/1016/300/200" onclick="showWish('✨ สมหวังในทุกสิ่งที่ตั้งใจ!')">
+  </div>
 
   <script>
     // 🎵 Toggle เพลง
@@ -102,7 +128,6 @@
       }
     }
 
-    // Animation Confetti
     const style = document.createElement("style");
     style.innerHTML = `
       @keyframes fall {
@@ -110,6 +135,11 @@
       }
     `;
     document.head.appendChild(style);
+
+    // 💌 ฟังก์ชันแสดงคำอวยพร
+    function showWish(message) {
+      alert(message);
+    }
   </script>
 </body>
 </html>

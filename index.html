@@ -59,7 +59,7 @@
       margin: 15px auto;
       max-width: 400px;
       box-shadow: 0 6px 15px rgba(0,0,0,0.1);
-      text-align: left;
+      text-align: center;
     }
 
     .card img {
@@ -80,7 +80,7 @@
   <!-- เมนู -->
   <div class="nav">
     <button onclick="showPage('home')">หน้าแรก</button>
-    <button onclick="showPage('gallery')">รูป + ข้อความ</button>
+    <button onclick="showPage('gallery')">อัลบั้มรูป</button>
   </div>
 
   <!-- หน้าแรก -->
@@ -89,54 +89,30 @@
     <p>เว็บนี้เก็บความทรงจำพิเศษของฉัน 💖</p>
   </div>
 
-  <!-- หน้าแนบรูปกับข้อความ -->
+  <!-- หน้าอัลบั้ม -->
   <div id="gallery" class="page">
-    <h2>📸 เขียนโพสต์พร้อมรูป</h2>
-    <input type="file" id="imageInput" accept="image/*"><br><br>
-    <textarea id="msgInput" rows="3" style="width:90%;border-radius:10px;padding:10px;" placeholder="พิมพ์ข้อความ..."></textarea><br>
-    <button onclick="addPost()">โพสต์</button>
+    <h2>📸 อัลบั้มรูปของเรา</h2>
 
-    <div id="postContainer"></div>
+    <div class="card">
+      <img src="https://picsum.photos/400/250?random=1" alt="รูปที่ 1">
+      <p>💌 ความทรงจำแรกของเรา</p>
+    </div>
+
+    <div class="card">
+      <img src="https://picsum.photos/400/250?random=2" alt="รูปที่ 2">
+      <p>🌸 วันที่แสนสดใส</p>
+    </div>
+
+    <div class="card">
+      <img src="https://picsum.photos/400/250?random=3" alt="รูปที่ 3">
+      <p>✨ โมเมนต์พิเศษ</p>
+    </div>
   </div>
 
   <script>
     function showPage(pageId) {
       document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
       document.getElementById(pageId).classList.add('active');
-    }
-
-    function addPost() {
-      const fileInput = document.getElementById("imageInput");
-      const msg = document.getElementById("msgInput").value;
-      const container = document.getElementById("postContainer");
-
-      if (fileInput.files.length === 0 && msg.trim() === "") {
-        alert("กรุณาเลือกรูปหรือใส่ข้อความอย่างน้อยหนึ่งอย่าง");
-        return;
-      }
-
-      const card = document.createElement("div");
-      card.classList.add("card");
-
-      if (fileInput.files.length > 0) {
-        const file = fileInput.files[0];
-        const url = URL.createObjectURL(file);
-        const img = document.createElement("img");
-        img.src = url;
-        card.appendChild(img);
-      }
-
-      if (msg.trim() !== "") {
-        const p = document.createElement("p");
-        p.textContent = msg;
-        card.appendChild(p);
-      }
-
-      container.appendChild(card);
-
-      // ล้าง input
-      fileInput.value = "";
-      document.getElementById("msgInput").value = "";
     }
   </script>
 </body>

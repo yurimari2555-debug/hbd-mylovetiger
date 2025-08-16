@@ -1,165 +1,425 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fan Website with Birthday Cake</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      margin: 0;
-      padding: 0;
-      background-color: #ffe6f0;
-    }
+  <title>🎂 HBD Special 🎂</title>
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: #000;
+    overflow-x: hidden;
+    color: white;
+  }
 
-    header {
-      background: #ff99cc;
-      padding: 20px;
-      color: white;
-      font-size: 24px;
-      font-weight: bold;
-    }
+  /* Intro */
+  #intro {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #001f3f, #0074D9, #7FDBFF);
+    animation: gradientFlow 12s ease infinite;
+    background-size: 400% 400%;
+    z-index: 999;
+    text-align: center;
+  }
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  #intro h1 {
+    font-size: 2.3em;
+    margin-bottom: 20px;
+    text-shadow: 0 0 8px #00c0ff, 0 0 16px #0074D9;
+  }
+  #intro .cat {
+    font-size: 4em;
+    animation: bounce 2s infinite, glow 1.5s alternate infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  @keyframes glow {
+    from { text-shadow: 0 0 5px #fff; }
+    to { text-shadow: 0 0 20px #ff9ff3; }
+  }
+  #intro button {
+    margin-top: 25px;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 40px;
+    background: linear-gradient(45deg, #ff9ff3, #74b9ff);
+    color: white;
+    font-weight: bold;
+    font-size: 1.3em;
+    cursor: pointer;
+    box-shadow: 0 0 20px rgba(255,192,203,0.8);
+    transition: 0.3s;
+  }
+  #intro button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #ff9ff3, 0 0 40px #74b9ff;
+  }
 
-    section {
-      padding: 20px;
-    }
+  /* Main */
+  #main {
+    display: none;
+    text-align: center;
+    padding-bottom: 50px;
+    background: linear-gradient(135deg, #ffd6eb, #a2d2ff);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    color: #333;
+  }
+  h1 {
+    margin-top: 30px;
+    font-size: 2.5em;
+    text-shadow: 0 0 8px #ffb6c1, 0 0 16px #74b9ff;
+  }
 
-    img {
-      max-width: 200px;
-      border-radius: 10px;
-      margin: 10px;
-    }
+  /* Cute music button */
+  .music-control {
+    margin: 15px auto;
+    padding: 12px 20px;
+    border-radius: 50px;
+    background: #fff;
+    color: #ff4fac;
+    font-weight: bold;
+    font-size: 1.1em;
+    border: 2px solid #ff4fac;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    transition: 0.3s;
+  }
+  .music-control:hover {
+    background: #ff4fac;
+    color: white;
+    transform: scale(1.1);
+  }
 
-    footer {
-      background: #ff99cc;
-      padding: 10px;
-      color: white;
-      margin-top: 20px;
-    }
+  input[type=range] {
+    margin-top: 10px;
+  }
 
-    /* 🎂 เค้กวันเกิด */
-    .cake {
-      position: relative;
-      margin: 50px auto;
-      width: 200px;
-      height: 150px;
-      background: #ff99cc;
-      border-radius: 10px;
-    }
+  /* Slideshow */
+  .slideshow {
+    margin-top: 20px;
+    position: relative;
+    max-width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .slideshow img {
+    width: 100%;
+    max-width: 700px;
+    border-radius: 15px;
+    box-shadow: 0 0 15px rgba(255,255,255,0.6);
+    display: none;
+    cursor: pointer;
+    margin: auto;
+  }
+  .slideshow img.active {
+    display: block;
+    animation: fade 1s ease-in-out;
+  }
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  .prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 182, 193, 0.7);
+    color: white;
+    border: none;
+    font-size: 2em;
+    padding: 10px 15px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: 0.3s;
+  }
+  .prev:hover, .next:hover {
+    background: #ff4fac;
+  }
+  .prev { left: 5%; }
+  .next { right: 5%; }
 
-    .candle {
-      position: absolute;
-      top: -40px;
-      left: 90px;
-      width: 20px;
-      height: 40px;
-      background: yellow;
-      border-radius: 5px;
-    }
+  /* Cute popup card */
+  .wish-box {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fffafc;
+    color: #333;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255,182,193,0.8);
+    z-index: 1000;
+    font-size: 1.2em;
+    width: 280px;
+    text-align: center;
+  }
+  .wish-box h3 {
+    margin-top: 0;
+    color: #ff4fac;
+  }
+  .close-btn {
+    margin-top: 15px;
+    background: #ff9ff3;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    font-size: 1.1em;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,105,180,0.6);
+    transition: 0.3s;
+  }
+  .close-btn:hover {
+    background: #74b9ff;
+    transform: scale(1.1);
+  }
 
-    .flame {
-      position: absolute;
-      top: -20px;
-      left: 5px;
-      width: 10px;
-      height: 20px;
-      background: orange;
-      border-radius: 50%;
-      animation: flicker 0.5s infinite;
-    }
+  /* Hearts */
+  .heart {
+    position: fixed;
+    bottom: 0;
+    font-size: 24px;
+    animation: floatUp 6s linear forwards;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-600px); opacity: 0; }
+  }
 
-    @keyframes flicker {
-      0% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.1); }
-      100% { opacity: 1; transform: scale(1); }
-    }
+  /* Stars */
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 2s infinite alternate;
+  }
+  @keyframes twinkle {
+    from { opacity: 0.2; transform: scale(1); }
+    to { opacity: 1; transform: scale(1.6); }
+  }
 
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      background: #ff4da6;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #e60073;
-    }
-
-    /* 🎉 confetti */
-    .confetti {
-      position: fixed;
-      top: -10px;
-      width: 10px;
-      height: 10px;
-      background: red;
-      animation: fall 3s linear forwards;
-    }
-
-    @keyframes fall {
-      to {
-        transform: translateY(100vh) rotate(360deg);
-        opacity: 0;
-      }
-    }
-  </style>
+  /* 3D Cake */
+  #cake-area {
+    margin-top: 40px;
+    text-align: center;
+  }
+  .cake3d {
+    position: relative;
+    margin: auto;
+    width: 200px;
+    height: 150px;
+  }
+  .cake-layer {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    background: #ff9ff3;
+    border-radius: 15px;
+    box-shadow: inset 0 -10px #ff6fa9;
+  }
+  .layer2 {
+    top: 40px;
+    width: 160px;
+    left: 20px;
+    background: #ffd6eb;
+    box-shadow: inset 0 -10px #ffb6c1;
+  }
+  .layer3 {
+    top: 80px;
+    width: 120px;
+    left: 40px;
+    background: #fff0f6;
+    box-shadow: inset 0 -10px #ffcce5;
+  }
+  .candle {
+    position: absolute;
+    top: -30px;
+    width: 12px;
+    height: 30px;
+    background: #fff;
+    border-radius: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  .flame {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12px;
+    height: 18px;
+    background: radial-gradient(circle, #ff0 20%, orange 70%, transparent 80%);
+    border-radius: 50%;
+    animation: flicker 0.2s infinite alternate;
+  }
+  @keyframes flicker {
+    from { transform: translateX(-50%) scale(1); opacity: 1; }
+    to   { transform: translateX(-50%) scale(1.2); opacity: 0.7; }
+  }
+  .blow-btn {
+    margin-top: 10px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(45deg, #ff9ff3, #74b9ff);
+    color: white;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(255, 182, 193, 0.7);
+    transition: 0.3s;
+  }
+  .blow-btn:hover {
+    transform: scale(1.1);
+    background: linear-gradient(45deg, #ff4fac, #4facfe);
+  }
+</style>
 </head>
 <body>
-  <!-- 💖 ส่วนเว็บแฟน -->
-  <header>
-    ยินดีต้อนรับเข้าสู่เว็บแฟน
-  </header>
 
-  <section>
-    <h2>รูปโปรด</h2>
-    <img src="https://placekitten.com/200/200" alt="รูปแฟน">
-    <img src="https://placekitten.com/201/200" alt="รูปแฟน">
-  </section>
+  <!-- Intro -->
+  <div id="intro">
+    <h1>วันนี้วันเกิดใครน้าาาา 🎂</h1>
+    <div class="cat">🐱</div>
+    <button onclick="enterSite()">เค้าเอง 🎉</button>
+  </div>
 
-  <!-- 🎂 ส่วนเค้กวันเกิด -->
-  <section>
-    <h2>สุขสันต์วันเกิด!</h2>
-    <div class="cake">
-      <div class="candle">
-        <div class="flame"></div>
-      </div>
+  <!-- Main -->
+  <div id="main">
+    <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
+    <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนได้ 💌</p>
+
+    <!-- ปุ่มเพลง -->
+    <button class="music-control" onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button><br>
+    🔊 ปรับเสียง: <input type="range" min="0" max="1" step="0.1" value="0.5" onchange="setVolume(this.value)">
+
+    <!-- เพลง -->
+    <audio id="bgMusic" loop>
+      <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Slideshow -->
+    <div class="slideshow">
+      <img src="https://picsum.photos/id/1011/1000/600" class="active" onclick="showWish('💖 ขอให้มีความสุขมากๆ ในทุกๆ วัน!')">
+      <img src="https://picsum.photos/id/1015/1000/600" onclick="showWish('🎂 สุขภาพแข็งแรง ร่ำรวยๆ เฮงๆ นะ!')">
+      <img src="https://picsum.photos/id/1016/1000/600" onclick="showWish('✨ สมหวังในทุกสิ่งที่ตั้งใจ!')">
+
+      <button class="prev" onclick="changeSlide(-1)">❮</button>
+      <button class="next" onclick="changeSlide(1)">❯</button>
     </div>
-    <button onclick="blowCandle()">เป่าเทียน 🎂</button>
-  </section>
 
-  <footer>
-    สร้างด้วยความรัก 💖
-  </footer>
+    <!-- 3D Cake -->
+    <div id="cake-area">
+      <div class="cake3d">
+        <div class="cake-layer"></div>
+        <div class="cake-layer layer2"></div>
+        <div class="cake-layer layer3"></div>
+        <div class="candle"><div class="flame"></div></div>
+      </div>
+      <button class="blow-btn" onclick="blowCandles()">เป่าเทียน 🕯️</button>
+    </div>
+  </div>
 
-  <script>
-    function blowCandle() {
-      const flame = document.querySelector('.flame');
-      if (flame) {
-        flame.remove();
-        launchConfetti();
-      }
+  <!-- Popup -->
+  <div id="wishPopup" class="wish-box"></div>
+
+<script>
+  // เข้าหน้า
+  function enterSite() {
+    document.getElementById("intro").style.display = "none";
+    document.getElementById("main").style.display = "block";
+    document.getElementById("bgMusic").play();
+    startEffects();
+  }
+
+  // เพลง
+  const music = document.getElementById("bgMusic");
+  function toggleMusic() {
+    if (music.paused) music.play();
+    else music.pause();
+  }
+  function setVolume(val) { music.volume = val; }
+
+  // popup
+  function showWish(message) {
+    const popup = document.getElementById("wishPopup");
+    popup.innerHTML = `<h3>💌 การ์ดอวยพร</h3><p>${message}</p>
+      <button class="close-btn" onclick="closeWish()">✕</button>`;
+    popup.style.display = "block";
+  }
+  function closeWish() {
+    document.getElementById("wishPopup").style.display = "none";
+  }
+
+  // slideshow
+  let slideIndex = 0;
+  const slides = document.querySelectorAll(".slideshow img");
+  function showSlide(n) {
+    slides.forEach((slide, i) => {
+      slide.classList.remove("active");
+      if (i === n) slide.classList.add("active");
+    });
+  }
+  function changeSlide(n) {
+    slideIndex = (slideIndex + n + slides.length) % slides.length;
+    showSlide(slideIndex);
+  }
+  setInterval(() => { changeSlide(1); }, 5000);
+
+  // Effects
+  function startEffects() {
+    // hearts
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "❤️";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 5000);
+    }, 1200);
+
+    // stars
+    for (let i = 0; i < 40; i++) {
+      let star = document.createElement("div");
+      star.className = "star";
+      star.style.top = Math.random() * window.innerHeight + "px";
+      star.style.left = Math.random() * window.innerWidth + "px";
+      star.style.animationDuration = (1 + Math.random() * 2) + "s";
+      document.getElementById("main").appendChild(star);
     }
+  }
 
-    function launchConfetti() {
-      for (let i = 0; i < 50; i++) {
-        const confetti = document.createElement('div');
-        confetti.className = 'confetti';
-        confetti.style.left = Math.random() * window.innerWidth + 'px';
-        confetti.style.backgroundColor = getRandomColor();
-        confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-        document.body.appendChild(confetti);
-
-        setTimeout(() => confetti.remove(), 5000);
-      }
-    }
-
-    function getRandomColor() {
-      const colors = ['#ff4da6', '#ffcc00', '#66ff66', '#3399ff', '#ff6600'];
-      return colors[Math.floor(Math.random() * colors.length)];
-    }
-  </script>
+  // blow candles
+  function blowCandles() {
+    const flames = document.querySelectorAll(".flame");
+    flames.forEach(f => f.style.display = "none");
+    alert("🕯️ เทียนดับแล้ว อธิษฐานแล้วนะ! 💖");
+  }
+</script>
 </body>
 </html>

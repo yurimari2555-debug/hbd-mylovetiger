@@ -155,20 +155,42 @@
   .prev { left: 5%; }
   .next { right: 5%; }
 
-  /* Popup */
+  /* Cute popup card */
   .wish-box {
     display: none;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
+    background: #fffafc;
     color: #333;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 0 25px rgba(255,105,180,0.8);
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 0 25px rgba(255,182,193,0.8);
     z-index: 1000;
     font-size: 1.2em;
+    width: 280px;
+    text-align: center;
+  }
+  .wish-box h3 {
+    margin-top: 0;
+    color: #ff4fac;
+  }
+  .close-btn {
+    margin-top: 15px;
+    background: #ff9ff3;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    font-size: 1.1em;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255,105,180,0.6);
+    transition: 0.3s;
+  }
+  .close-btn:hover {
+    background: #74b9ff;
+    transform: scale(1.1);
   }
 
   /* Hearts */
@@ -200,28 +222,48 @@
     to { opacity: 1; transform: scale(1.6); }
   }
 
-  /* Cake Area */
+  /* 3D Cake */
   #cake-area {
     margin-top: 40px;
     text-align: center;
   }
-  .cake {
-    display: inline-block;
+  .cake3d {
     position: relative;
-    margin-bottom: 15px;
+    margin: auto;
+    width: 200px;
+    height: 150px;
   }
-  .candles {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: -10px;
+  .cake-layer {
+    position: absolute;
+    width: 200px;
+    height: 50px;
+    background: #ff9ff3;
+    border-radius: 15px;
+    box-shadow: inset 0 -10px #ff6fa9;
+  }
+  .layer2 {
+    top: 40px;
+    width: 160px;
+    left: 20px;
+    background: #ffd6eb;
+    box-shadow: inset 0 -10px #ffb6c1;
+  }
+  .layer3 {
+    top: 80px;
+    width: 120px;
+    left: 40px;
+    background: #fff0f6;
+    box-shadow: inset 0 -10px #ffcce5;
   }
   .candle {
+    position: absolute;
+    top: -30px;
     width: 12px;
-    height: 40px;
+    height: 30px;
     background: #fff;
     border-radius: 3px;
-    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
   .flame {
     position: absolute;
@@ -238,11 +280,8 @@
     from { transform: translateX(-50%) scale(1); opacity: 1; }
     to   { transform: translateX(-50%) scale(1.2); opacity: 0.7; }
   }
-  .cake-body {
-    font-size: 3em;
-    margin-top: -5px;
-  }
   .blow-btn {
+    margin-top: 10px;
     padding: 10px 20px;
     border: none;
     border-radius: 25px;
@@ -272,7 +311,7 @@
   <!-- Main -->
   <div id="main">
     <h1>🎉 สุขสันต์วันเกิด 🎉</h1>
-    <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนเองได้ 💌</p>
+    <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนได้ 💌</p>
 
     <!-- ปุ่มเพลง -->
     <button class="music-control" onclick="toggleMusic()">🎵 เปิด/ปิด เพลง</button><br>
@@ -293,17 +332,14 @@
       <button class="next" onclick="changeSlide(1)">❯</button>
     </div>
 
-    <!-- Birthday Cake -->
+    <!-- 3D Cake -->
     <div id="cake-area">
-      <div class="cake">
-        <div class="candles">
-          <div class="candle"><div class="flame"></div></div>
-          <div class="candle"><div class="flame"></div></div>
-          <div class="candle"><div class="flame"></div></div>
-        </div>
-        <div class="cake-body">🎂</div>
+      <div class="cake3d">
+        <div class="cake-layer"></div>
+        <div class="cake-layer layer2"></div>
+        <div class="cake-layer layer3"></div>
+        <div class="candle"><div class="flame"></div></div>
       </div>
-      <br>
       <button class="blow-btn" onclick="blowCandles()">เป่าเทียน 🕯️</button>
     </div>
   </div>
@@ -331,7 +367,8 @@
   // popup
   function showWish(message) {
     const popup = document.getElementById("wishPopup");
-    popup.innerHTML = message + "<br><br><button onclick='closeWish()'>ปิด</button>";
+    popup.innerHTML = `<h3>💌 การ์ดอวยพร</h3><p>${message}</p>
+      <button class="close-btn" onclick="closeWish()">✕</button>`;
     popup.style.display = "block";
   }
   function closeWish() {

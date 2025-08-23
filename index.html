@@ -87,30 +87,6 @@
     text-shadow: 0 0 8px #ffb6c1, 0 0 16px #74b9ff;
   }
 
-  /* Cute music button */
-  .music-control {
-    margin: 15px auto;
-    padding: 12px 20px;
-    border-radius: 50px;
-    background: #fff;
-    color: #ff4fac;
-    font-weight: bold;
-    font-size: 1.1em;
-    border: 2px solid #ff4fac;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    transition: 0.3s;
-  }
-  .music-control:hover {
-    background: #ff4fac;
-    color: white;
-    transform: scale(1.1);
-  }
-
-  input[type=range] {
-    margin-top: 10px;
-  }
-
   /* Slideshow */
   .slideshow {
     margin-top: 20px;
@@ -154,6 +130,15 @@
   }
   .prev { left: 5%; }
   .next { right: 5%; }
+  
+  /* Wish Message */
+  .wish-message {
+    font-size: 1.4em;
+    font-weight: bold;
+    color: #ff4fac;
+    text-shadow: 1px 1px 2px #fff;
+    margin: 20px auto;
+  }
 
   /* Cute popup card */
   .wish-box {
@@ -178,7 +163,7 @@
   }
   .close-btn {
     margin-top: 15px;
-    background: #ff9ff3;
+    background: linear-gradient(45deg, #ff9ff3, #74b9ff);
     color: white;
     border: none;
     border-radius: 50%;
@@ -189,7 +174,7 @@
     transition: 0.3s;
   }
   .close-btn:hover {
-    background: #74b9ff;
+    background: linear-gradient(45deg, #ff4fac, #4facfe);
     transform: scale(1.1);
   }
 
@@ -316,7 +301,7 @@
     <p>ภาพจะเปลี่ยนอัตโนมัติ หรือกดลูกศรเลื่อนได้ 💌</p>
 
     <div style="text-align: center; margin: 20px auto; max-width: 500px;">
-        <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/1Y3LN4zO1Edc2EluIoSPJN?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+      <iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/track/1Y3LN4zO1Edc2EluIoSPJN?utm_source=generator&theme=0" width="100%" height="152" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
     </div>
     
     <div class="slideshow">
@@ -327,6 +312,8 @@
       <button class="prev" onclick="changeSlide(-1)">❮</button>
       <button class="next" onclick="changeSlide(1)">❯</button>
     </div>
+
+    <p class="wish-message">วันนี้เป็นวันพิเศษ ขอให้มีความสุขมากๆ นะ! 🎁</p>
 
     <div id="cake-area">
       <div class="cake" aria-label="เค้กวันเกิด">
@@ -499,9 +486,3 @@
 </script>
 </body>
 </html>
-
-
-
-
-
-
